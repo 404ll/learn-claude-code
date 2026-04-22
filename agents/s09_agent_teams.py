@@ -350,13 +350,23 @@ def agent_loop(messages: list):
                 "role": "user",
                 "content": f"<inbox>{json.dumps(inbox, indent=2)}</inbox>",
             })
-        response = client.messages.create(
-            model=MODEL,
-            system=SYSTEM,
-            messages=messages,
-            tools=TOOLS,
-            max_tokens=8000,
-        )
+        for _attempt in range(5):
+            try:
+                response = client.messages.create(
+                    model=MODEL,
+                    system=SYSTEM,
+                    messages=messages,
+                    tools=TOOLS,
+                    max_tokens=8000,
+                )
+                break
+            except Exception as e:
+                if "rate_limit" in str(e).lower() and _attempt < 4:
+                    wait = 2 ** _attempt
+                    print(f"限流，{wait} 秒后重试…")
+                    time.sleep(wait)
+                else:
+                    raise
         messages.append({"role": "assistant", "content": response.content})
         if response.stop_reason != "tool_use":
             return

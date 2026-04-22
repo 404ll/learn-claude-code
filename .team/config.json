@@ -1,0 +1,15 @@
+{
+  "team_name": "default",
+  "members": [
+    {
+      "name": "Alice",
+      "role": "\u5f00\u53d1\u8005",
+      "status": "idle"
+    },
+    {
+      "name": "Bob",
+      "role": "\u6d4b\u8bd5\u8005",
+      "status": "idle"
+    }
+  ]
+}
